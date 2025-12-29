@@ -4,90 +4,233 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesan Khusus</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    
     <style>
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('2025-12-30.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+        }
+
+        /* Password Gate Container */
+        #password-gate {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .icon-container {
+            background: rgba(79, 70, 229, 0.2);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .icon-container ion-icon {
+            font-size: 1.5rem;
+            color: #818cf8;
+        }
+
+        h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .subtitle { font-size: 0.875rem; color: rgba(255,255,255,0.7); margin-bottom: 1.5rem; }
+
+        /* Input Styles */
+        .input-group { position: relative; margin-bottom: 1rem; }
+
+        input[type="password"], input[type="text"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            padding-right: 3rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4); }
+
+        #toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+        }
+
+        /* Button */
+        #submit-password {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: none;
+            background: rgba(79, 70, 229, 0.6);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #submit-password:hover { background: rgba(79, 70, 229, 0.8); }
+
+        /* Notification */
+        #notification { margin-top: 1rem; font-size: 0.85rem; height: 20px; }
+        .error-text { color: #f87171; animation: bounce 0.5s infinite alternate; }
+
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+
+        /* Main Content */
         .hidden-content { display: none; }
-        .fade-in { animation: fadeIn 0.5s ease-in; }
+        
+        #main-content {
+            width: 100%;
+            max-width: 700px;
+            animation: fadeIn 0.8s ease-in;
+        }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .header-content { margin-bottom: 2rem; padding: 1rem; }
+        .header-content h3 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .header-content p { font-style: italic; color: rgba(255,255,255,0.8); }
+
+        /* Accordion Styles */
+        details {
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        summary {
+            padding: 1rem;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        summary::-webkit-details-marker { display: none; }
+
+        .arrow {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            transition: transform 0.3s;
+        }
+
+        details[open] .arrow { transform: rotate(90deg); }
+
+        .content-box {
+            padding: 0 1rem 1rem 2.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.9);
+        }
+
+        footer {
+            position: fixed;
+            bottom: 15px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .error-border { border-color: #f87171 !important; }
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-5 font-sans bg-fixed bg-cover bg-center"
-    style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('2025-12-30.jpeg');">
+<body>
 
-    <div id="password-gate" class="w-full max-w-md backdrop-blur-sm p-8 rounded-2xl shadow-xl border-slate-100 transition-all">
-        <div class="text-center mb-6">
-            <div class="bg-indigo-100/25 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ion-icon name="lock-closed" class="text-indigo-70000 text-2xl"></ion-icon>
-            </div>
-            <h1 class="text-2xl font-bold text-slate-800">Close to End</h1>
-            <p class="text-white/75 text-sm mt-2">Please enter password to read messages.</p>
+    <div id="password-gate">
+        <div class="icon-container">
+            <ion-icon name="lock-closed"></ion-icon>
         </div>
+        <h1>Close to End</h1>
+        <p class="subtitle">Please enter password to read messages.</p>
 
-        <div class="space-y-4">
-            <div class="relative">
-                <input type="password" id="password-input" 
-                    class="w-full px-4 py-3 rounded-lg bg-white/10 backdrop-blur-md text-white placeholder-white/60 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all pr-12" 
-                    placeholder="Password">
-                <button type="button" id="toggle-password" class="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-indigo-600 flex">
-                    <ion-icon id="eye-icon" name="eye-outline" class="text-xl"></ion-icon>
-                </button>
-            </div>
-            
-            <button id="submit-password" 
-                class="w-full bg-indigo-600/40 backdrop-blur-md hover:bg-indigo-600/60 text-white font-semibold py-3 rounded-lg transition-all shadow-lg shadow-indigo-500/20 border-white/20">
-                Open
+        <div class="input-group">
+            <input type="password" id="password-input" placeholder="Password">
+            <button type="button" id="toggle-password">
+                <ion-icon id="eye-icon" name="eye-outline"></ion-icon>
             </button>
-            
-            <div id="notification" class="text-center text-sm font-medium min-h-[20px]"></div>
-        </div>
-    </div>
-
-    <div id="main-content" class="hidden-content w-full max-w-2xl fade-in">
-        <div class=" p-6">
-            <h3 class="font-bold text-2xl text-slate-800 mb-2">Assalamu'alaikum...</h3>
-            <p class="text-white/75 italic">Ini adalah pesan jawaban kakak atas pertanyaan kamu.</p>
         </div>
         
-        <div id="accordion-container" class="space-y-">
-            </div>
+        <button id="submit-password">Open</button>
+        <div id="notification"></div>
+    </div>
+
+    <div id="main-content" class="hidden-content">
+        <div class="header-content">
+            <h3>Assalamu'alaikum...</h3>
+            <p>Ini adalah pesan jawaban kakak atas pertanyaan kamu.</p>
         </div>
+        
+        <div id="accordion-container">
+            </div>
+    </div>
 
-    <audio id="background-music" src="love Story - Indila (only the best part).mp3" autoplay loop></audio>
+    <audio id="background-music" src="love Story - Indila (only the best part).mp3" loop></audio>
 
-    <footer class="fixed bottom-3 text-amber-50/75 text-xs">@iMen</footer>
+    <footer>@iMen</footer>
 
     <script>
         const CORRECT_PASSWORD = "28122025"; 
         const dataAccordion = [
-
             {
                 title: "Waktu itu tidak ada yang salah,",
-                content: "hanya personality. jangan nyalahin diri ya..  jangan bersedih, saya bahkan tidak tau kalo Nanda bersedih karena saya di belakang sebagai Poter/Sweeper. terimakasih yaa saya juga tidak tau kenapa bisa bersedih karena saya di belakang bukit itu. tapi bener kok bukan karena nanda atau teman nanda dan kalian. Nanda gak egois, kita tidak egois, kita sudah menang, terkadang kemenangan itu tidak harus dengan hasil yang nyata. kalo mau jujur di bukit itu kk sedang merayakan kemenangan. speechless tiba\" berkaca, awalnya hanya rehat dan memejamkan mata pas buka mata jadi berkaca\". hanya terlintas saja entah kenapa dan teringat memang ada yang harus buka lembar baru, seperti yang kita obrolkan di Puncak Pemancar '... sudah saatnya membuka lembaran baru' sedikit lolucon karena saat itu membahas si rehan ◝(ᵔᗜᵔ)◜. Nanda juga bertanya apakah aku penulis? sebenarnya dulu iya. bukan sekedar saya menceritakan kisah ku kepada temenku yang penasaran soal ceritaku. tapi dulu di Pondok saya bagian Sekretaris IST klo di luar itu OSIS, walaupun sekretaris saya kadang di  minta untuk bantu bagian redaksi majalah pondok 'Almukminun'."
+                content: "hanya personality. jangan nyalahin diri ya.. jangan bersedih, saya bahkan tidak tau kalo Nanda bersedih karena saya di belakang sebagai Poter/Sweeper. terimakasih yaa saya juga tidak tau kenapa bisa bersedih karena saya di belakang bukit itu. tapi bener kok bukan karena nanda atau teman nanda dan kalian. Nanda gak egois, kita tidak egois, kita sudah menang, terkadang kemenangan itu tidak harus dengan hasil yang nyata. kalo mau jujur di bukit itu kk sedang merayakan kemenangan. speechless tiba\" berkaca, awalnya hanya rehat dan memejamkan mata pas buka mata jadi berkaca\". hanya terlintas saja entah kenapa dan teringat memang ada yang harus buka lembar baru, seperti yang kita obrolkan di Puncak Pemancar '... sudah saatnya membuka lembaran baru' sedikit lolucon karena saat itu membahas si rehan ◝(ᵔᗜᵔ)◜. Nanda juga bertanya apakah aku penulis? sebenarnya dulu iya. bukan sekedar saya menceritakan kisah ku kepada temenku yang penasaran soal ceritaku. tapi dulu di Pondok saya bagian Sekretaris IST klo di luar itu OSIS, walaupun sekretaris saya kadang di minta untuk bantu bagian redaksi majalah pondok 'Almukminun'."
             },
-
             {
                 title:"karena dulu saya sering mengetik",
                 content: "karena duru saya sering mengetik sampai sekarang juga mengetik coding (^‿^\"). di dunia kerja lebih banyak permainan apalagi WNI mungkin sulit di pahami bagi pelajar, dari di permalukan atau di permainkan. pasti pekerja punya keluh kesah, apalagi sekian banyak pertempuran bersamaan problema lain. rasanya ingin berhenti tapi siapa lagi kalo bukan demi ummi dan saudra/i dan keluarga walaupun saya bukan anak pertama tapi tidak ada yang melarang saya untuk kebahagiaan keluarga. nah yep saya merayakan untuk kebahagiaan mereka, ah its dramatic? tp membosankan sekali, selalu berkali\". di puncak saya termenung dan mepersiapkan diri untuk merefresh lembaran, kk coba mengubah semua yang ada di jejak entah itu dalam diri, pikiran, dan alat (phone). kk sudah pasrahkan dan lepaskan bahkan terhempas sekalipun tidak masalah. bahkan terhempas pun ada juga rintangan tersangkut di ranting dan duri. kertas terhampas saja bisa terbakar melewati lautan api. agak hilang akal dalam hati hingga sangat lancang dengan yang kurang sopan mungkin, mungkin juga di katakan seperti keputus asaan. tetapi kk rasa ini untuk pelepasan, keikhlasan, keridhoan caraku walau memang gak pantas terpanjatkan doa harusnya sebagai orang normal. 'kanan boleh kiri boleh juga lurus terserah rasanya muak dan hambar saja, hanya ingin ampunan-Mu dan Ijabah-Mu. prioritasku hanya Ummi, saudara/i, dan keluarga. sisanya terserah asalkan mereka di terima oleh Surga-Mu'. agak ambigu tapi memang kacau, tetapi kalo kelamaan akan ada yang menunggu dan khawatir."
             },
-
             {
                 title: "saya dari dulu saya itu Pemalu.",
                 content: "sama keluarga aja berlagak kuat\" dan berlagak pendiem. diem\" tapi penyayang kek malu\" kucing tapi hanya Ummi dan mbk pasti paham, kenapa mengalah, kenapa pendiem, kenapa pura\" sehat. yang paling sering membuat khawatir ummi, pernah dulu masa covid19 kerja di Klaten selepas qurban demam berasa tak de kehidupan mana waktu di call ngomong yg gak\" trs g kuat entah dulu pingsan atau ketiduran. yang ku ingat tengah malam sepupu ngajar di PONPES Darul Syahadah datang ke klaten dan di bawa pulang. mungkin dari sini Nanda paham, kenapa waktu itu sendirian di puncak mungkin cukup lama kk menyendiri. di Puncak Pemancar kk juga gak tau kenapa deg gtu kirain nginggau gak sadar. uhmm... maaf ya bukan apa atau kenapa, kalau mau di salahin kk gpp saya terima. di situ juga kk gak sadar saya kira Dia, jujur saya tahan bngt dan mengalihkan pemandangan yang indah itu. supaya kk gak kenapa-kenapa"
             },
-
             {
                 title: "Di Puncak Pemancar",
                 content: "memang sangat indah viewnya Jurasic Park versi Merbabu. saya bersyukur yang terjadi, yang ku alami, yang akan datang entah buruk dan baiknya. semoga ku nikmati dan Allah menerima doaku. kk minta maaf banget tidak ada maksut, hanya saja kk bisa control diri untuk ego itu sudah aman, belajar dari masa lalu hanya karena ego. kk juga pernah bahkan sering menanyakan ego diri dan menyalahkannya. maaf bila nanda merasa khawatir padahal di balik itu kk sudah berusaha siap dan berberes supaya tidak ada bekas atau apalah yang tanpa kk sadari nanda menilainya sendiri. harusnya kk tutup juga dengan kacamata. jawabku 'iya gpp kok •ᴗ•' kk kira bakal aman dan tidak ada kejanggalan dengan diri kk ataupun dari raut wajah. kk gak kecewa dan menyalahkan nanda, teman nanda, ataupun kalian bahkan terhadap kegiatan kita mendaki merbabu. jujur jika kita bisa metaklukan kita bersyukur dan kita juga bersyukur juga pulang dengan selamat dengan usaha kita tempuh itu gak masalah karena sesuai kemampuan kita. justru saya sangat khawatir dari pemancar kalau mau tekat final saya tidak yakin dengan rehan dan agis, mental kuat tapi tubuh tidak bisa di bohongi rasa dehidrasi jika mental sekuat baja ia tidak akan merasakan entah kelelahan dan kehausan, bahkan bisa jadi seketika itu berhenti. bisa repot karena pasokan kita bawa air terbatas. saya pernah merasakan itu hanya kegilaan sih dari BC slamet - pos 4 tidak minum bawa carier untuk camp di pos4. jika tidak kejadian di gunung efeknya di daratan biasanya bibirnya pecah keras. karena sama pemula belum terbiasa dengan energi dan air, wajar bila minum langsung beberapa tegukan. di atas sana air tidak mengalir itu sudah meragukan dan tidak layak dan juga yang dibawah menunggu kita. kk salut sama semangat dan tenaga nanda bisa kuat tahan tubuh. di tawarin makan di atas masih malu mungkin padahal itu untuk kita bareng. "
             },
-
             {
                 title: "sudah sangat senang",
                 content: "sudah cukup tenang kalian selamat tidak ada kendala sedikitpun sampai pulang ke rumah. apalagi anak orang wanita pulang kemalaman, ummi aja khawatir sama anaknnya. tapi sering sih kk da adik kk yang di kontrakan sama rifqi (supir) pulang tengah malam, urusan di kelarin total klo sempet baru berangkat pulang :D. jika kk tekat final sediri bisa memang tapi mending kk turun aja, cuma kalo yang lain mau final gak masalah. saya sebagai sweeper tetap mantau belakang. tapi sepertinya ada yang lewat kk tidak tau klo ada ngejek kalian dari pendaki lain. padahal sedikit yang ambil tektok apalagi track yang menantang banget bagi pemula. oh iya maaf bila ada dari pihak cowok agak kurang nyaman katanya karena saya tau orangnya ngomong blak\" apalagi waktu sore atau magrib kata\" ngaco atau ngawur. itu bukan dari manusia tapi dari setan, waktu magrib itu kk mau respond '..he.' langsung diam karena salut banget sama nanda sudah respond dan menasehatinya. karena kk dulu pernah guide juga di sumbing berujung nyasar sampai basecamp seberang. Ex: yang harusnya bc.Thekelan malah turun di bc.Suwanting kadang hal sepele pun bisa mengubah begitu jauh."
             },
-
             {
                 title: "bisa membantu orang lain.",
                 content: "sudah kebiasaan karena kk selalu ingat pesan ummi waktu saya kerja di klaten 'kk jangan sombong dan pelit, jika bisa bantu maka bantu semampunya dan jangan lupa sedekah itu untuk dirimu.' dulu di klaten banyak sekali makan entah dari rumah tahfidz, masjid, bahkan dari warga, belum lagi imam tarawih di masjid. karena begitu banyaknya saat buka maupun sahur keluar bagi makan. begitu pula sekarang, disini dan ke depannya insyaAllah jika Allah SWT metakdirkan. akan ku usahakan itu entah itu ummi, saudara/i, keluarga atau orang lain dengan kemampuanku yang bisa maka akan kk bantu InsyaAllah. oh iya terakhir mungkin wanita fithrahnya adalah sifat pemalu, wajar bila malu. apalagi lawan jenis bukan makhromnya"
@@ -101,71 +244,58 @@
         const toggleBtn = document.getElementById('toggle-password');
         const eyeIcon = document.getElementById('eye-icon');
         const notification = document.getElementById('notification');
+        const music = document.getElementById('background-music');
 
-        // 1. Toggle Password Visibility
+        // Toggle Password Visibility
         toggleBtn.addEventListener('click', () => {
             const isPassword = passwordInput.type === 'password';
             passwordInput.type = isPassword ? 'text' : 'password';
             eyeIcon.name = isPassword ? 'eye-off-outline' : 'eye-outline';
         });
 
-        // 2. Password Validation Logic
+        // Password Validation Logic
         function checkPassword() {
-    const input = passwordInput.value;
-    const music = document.getElementById('background-music'); // Ambil elemen audio
+            const input = passwordInput.value;
 
-    if (input === CORRECT_PASSWORD) {
-        // Play music
-        music.play().catch(error => {
-            console.log("Autoplay dicegah oleh browser, namun musik akan dicoba putar kembali.");
-        });
-
-        // Success transition
-        passwordGate.classList.add('hidden');
-        mainContent.classList.remove('hidden-content');
-        document.body.classList.remove('items-center'); 
-        renderAccordion();
-    } else {
-        // Error
-        notification.textContent = "Merbabu trailRun Date";
-        notification.className = "text-center text-sm font-medium text-red-500 animate-bounce";
-        passwordInput.classList.add('border-red-500');
-        setTimeout(() => {
-            notification.classList.remove('animate-bounce');
-        }, 1000);
-    }
-}
+            if (input === CORRECT_PASSWORD) {
+                music.play().catch(() => console.log("Music play blocked"));
+                passwordGate.style.display = 'none';
+                mainContent.classList.remove('hidden-content');
+                document.body.style.alignItems = 'flex-start';
+                renderAccordion();
+            } else {
+                notification.textContent = "Merbabu trailRun Date";
+                notification.className = "error-text";
+                passwordInput.classList.add('error-border');
+                setTimeout(() => {
+                    notification.classList.remove('error-text');
+                }, 1000);
+            }
+        }
 
         submitBtn.addEventListener('click', checkPassword);
         passwordInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') checkPassword();
         });
 
-        // 3. Render Accordion Function
+        // Render Accordion Function
         function renderAccordion() {
             const container = document.getElementById('accordion-container');
-            
             const htmlMarkup = dataAccordion.map((item) => `
-                <details class="group transition-all duration-300">
-                    <summary class="flex cursor-pointer items-center py-1 px-2 font-medium text-slate-900 list-none outline-none">
-                        <svg class="h-4 w-4 mr-2 text-slate-500 transition-transform duration-300 group-open:rotate-90" 
-                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <details>
+                    <summary>
+                        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                         <span>${item.title}</span>
                     </summary>
-                    <div class="pl-8 pr-4 pb-2 text-sm leading-relaxed text-slate-600">
-                        <p class="text-white">${item.content}</p>
+                    <div class="content-box">
+                        <p>${item.content}</p>
                     </div>
                 </details>
             `).join('');
-
             container.innerHTML = htmlMarkup;
         }
-
-        // Autoplay music
-        const music = document.getElementById('background-music');
-        music.volume = 1.5; 
     </script>
 </body>
 </html>
